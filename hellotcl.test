@@ -1,0 +1,9 @@
+package require hellotcl
+package require tcltest
+namespace import ::tcltest::*
+
+test hello-1.0 {hello} {
+   hello
+} {Hello, World!}
+
+cleanupTests
