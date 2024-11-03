@@ -17,7 +17,7 @@
 #------------------------------------------------------------------------------
 
 # The name of the package
-PROJECT = sample
+PROJECT = hellotcl
 
 !include "rules-ext.vc"
 
@@ -26,12 +26,12 @@ PROJECT = sample
 # hence it is under that condition. TMP_DIR is the output directory
 # defined by rules for object files.
 PRJ_OBJS = \
-	$(TMP_DIR)\tclsample.obj \
-	$(TMP_DIR)\sample.obj
+	$(TMP_DIR)\tclcmd.obj \
+	$(TMP_DIR)\tclhello.obj \
+	$(TMP_DIR)\hellotcl.obj
 
 # Define any additional compiler flags that might be required for the project
 PRJ_DEFINES = -D_CRT_SECURE_NO_DEPRECATE
-PRJ_DEFINES = $(PRJ_DEFINES) -I$(TMP_DIR)
 
 # Define the standard targets
 !include "$(_RULESDIR)\targets.vc"
@@ -45,9 +45,8 @@ $(ROOT)\manifest.uuid:
    copy $(WIN_DIR)\gitmanifest.in $(ROOT)\manifest.uuid
    git rev-parse HEAD >>$(ROOT)\manifest.uuid
 
-$(TMP_DIR)\sampleUuid.h:	$(ROOT)\manifest.uuid
-	copy $(WIN_DIR)\sampleUuid.h.in+$(ROOT)\manifest.uuid $(TMP_DIR)\sampleUuid.h
-
+$(TMP_DIR)\hellotclUuid.h:	$(ROOT)\manifest.uuid
+	copy $(WIN_DIR)\hellotclUuid.h.in+$(ROOT)\manifest.uuid $(TMP_DIR)\hellotclUuid.h
 
 # The default install target only installs binaries and scripts so add
 # an additional target for our documentation. Note this *adds* a target
@@ -56,4 +55,14 @@ $(TMP_DIR)\sampleUuid.h:	$(ROOT)\manifest.uuid
 install: default-install-docs-n
 
 # Explicit dependency rules
-$(GENERICDIR)\tclsample.c : $(GENERICDIR)\sample.h $(TMP_DIR)\sampleUuid.h
+$(GENERICDIR)\hellotcl.cpp : $(GENERICDIR)\tclhello.hpp $(TMP_DIR)\hellotclUuid.h
+
+$(GENERICDIR)\tclhello.cpp : $(GENERICDIR)\tclhello.hpp $(GENERICDIR)\tclcmd.hpp
+
+{$(GENERICDIR)}.cpp{$(TMP_DIR)}.obj::
+	$(CCPKGCMD) /EHsc @<<
+$<
+<<
+
+.SUFFIXES:
+.SUFFIXES:.cpp .rc
