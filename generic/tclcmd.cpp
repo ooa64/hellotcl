@@ -1,13 +1,13 @@
-// $Id$
-
 #include "tclcmd.hpp"
 
-#if defined(DEBUG) && !defined(TCLCMD_DEBUG)
-#   undef DEBUGLOG
+#if defined(TCLCMD_DEBUG)
+#   include <iostream>
+#   define DEBUGLOG(_x_) (std::cerr << "DEBUG: " << _x_ << "\n")
+#else
 #   define DEBUGLOG(_x_)
 #endif
 
-TclCmd::TclCmd(Tcl_Interp * interp, char * name) {
+TclCmd::TclCmd(Tcl_Interp * interp, const char * name) {
   tclInterp = NULL;
   tclToken = NULL;
   pParent = NULL;
@@ -17,7 +17,7 @@ TclCmd::TclCmd(Tcl_Interp * interp, char * name) {
   Rename(interp, name);
 };
 
-TclCmd::TclCmd(Tcl_Interp * interp, char * name, TclCmd * parent) {
+TclCmd::TclCmd(Tcl_Interp * interp, const char * name, TclCmd * parent) {
   tclInterp = NULL;
   tclToken = NULL;
   pParent = NULL;
@@ -34,7 +34,7 @@ TclCmd::~TclCmd() {
   Rename(NULL, NULL);
 }
 
-void TclCmd::Rename(Tcl_Interp * interp, char * name) {
+void TclCmd::Rename(Tcl_Interp * interp, const char * name) {
   if (interp && name) {
     DEBUGLOG("TclCmd::Rename *" << this << " '" << \
 	     Tcl_GetCommandName(tclInterp, tclToken) << \

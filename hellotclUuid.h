@@ -1,0 +1,3 @@
+#define HELLOTCL_VERSION_UUID \
+git-d43d9d88fa0f0ab18b0e4c1540262c49eafd6fd9
+

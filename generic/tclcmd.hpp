@@ -1,11 +1,9 @@
-// $Id$
-
 #ifndef TCLCMD_H
 #define TCLCMD_H
 
 #include <tcl.h>
 
-#if defined(DEBUG)
+#if defined(TCLCMD_DEBUG)
 #   include <iostream>
 #   define DEBUGLOG(_x_) (std::cerr << "DEBUG: " << _x_ << "\n")
 #else
@@ -19,6 +17,11 @@
            Tcl_AppendToObj(a,Tcl_GetStringFromObj(b,NULL),-1)
 #endif
 
+#if TCL_MAJOR_VERSION == 8
+#   define STUB_VERSION "8.5"
+#else
+#   define STUB_VERSION "9.0"
+#endif
 
 // Common TclCmd ancestor to all objects. This defines
 // common destructing and command dispatching methods.
@@ -30,13 +33,13 @@ public:
   TclCmd() : tclInterp(NULL), tclToken(NULL), 
 	     pParent(NULL), pNext(NULL), pPrev(NULL), pChildren(NULL) {};
 
-  TclCmd(Tcl_Interp * interp, char * name);
-  TclCmd(Tcl_Interp * interp, char * name, TclCmd * parent);
+  TclCmd(Tcl_Interp * interp, const char * name);
+  TclCmd(Tcl_Interp * interp, const char * name, TclCmd * parent);
 
   virtual ~TclCmd();
   // virtual destructor for all objects
 
-  void Rename(Tcl_Interp * interp, char * name);
+  void Rename(Tcl_Interp * interp, const char * name);
   int IsNamed() {return (tclInterp && tclToken);};
   const char * Name() {return IsNamed() ? 
 		   Tcl_GetCommandName(tclInterp, tclToken) : NULL;};
